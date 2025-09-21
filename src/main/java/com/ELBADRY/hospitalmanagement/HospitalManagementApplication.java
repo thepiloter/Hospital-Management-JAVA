@@ -1,19 +1,18 @@
 package com.ELBADRY.hospitalmanagement;
 
-import com.ELBADRY.hospitalmanagement.entities.Doctor;
-import com.ELBADRY.hospitalmanagement.entities.Patient;
-import com.ELBADRY.hospitalmanagement.repositories.DoctorRepository;
-import com.ELBADRY.hospitalmanagement.repositories.PatientRepository;
-import com.ELBADRY.hospitalmanagement.service.IHospitalService;
+import java.util.Calendar;
+import java.util.stream.Stream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Stream;
+import com.ELBADRY.hospitalmanagement.entities.Doctor;
+import com.ELBADRY.hospitalmanagement.entities.Patient;
+import com.ELBADRY.hospitalmanagement.repositories.PatientRepository;
+import com.ELBADRY.hospitalmanagement.service.IHospitalService;
 
 @SpringBootApplication
 public class HospitalManagementApplication  {
@@ -50,7 +49,19 @@ public class HospitalManagementApplication  {
             Stream.of("ELBADRY", "Hassan", "Ali").forEach(name -> {
                 Patient patient = new Patient();
                 patient.setName(name);
-                patient.setBirthDate(new Date());
+
+                // BUG: Data Logic Bug - Validação incorreta de data de nascimento
+                // Permite criar pacientes com data de nascimento no futuro
+                Calendar cal = Calendar.getInstance();
+                if (name.equals("Hassan")) {
+                    // Bug: Data de nascimento 5 anos no futuro
+                    cal.add(Calendar.YEAR, 5);
+                } else {
+                    // Bug: Usa data atual como nascimento (idade = 0)
+                    // Deveria usar uma data no passado
+                }
+                patient.setBirthDate(cal.getTime());
+
                 patient.setSick(false);
                 patient.setScore((int) (Math.random() * 100));
                 hospitalService.savePatient(patient);
