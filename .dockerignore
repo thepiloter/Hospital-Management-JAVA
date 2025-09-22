@@ -1,0 +1,47 @@
+# Ignore build artifacts
+target/
+*.jar
+*.war
+*.class
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Git
+.git/
+.gitignore
+
+# Ignore logs
+logs/
+*.log
+
+# Ignore temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Ignore Maven wrapper (we'll use the container's Maven)
+.mvn/
+mvnw
+mvnw.cmd
+
+# Ignore documentation (not needed in container)
+README.md
+Doc.md
+
+# Ignore Docker files themselves
+Dockerfile
+docker-compose.yml
+.dockerignore

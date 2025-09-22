@@ -1,185 +1,274 @@
-# Hospital Management System
+# 🏥 Hospital Management System - Java Spring Boot
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Spring%20Boot-3.4.3-brightgreen" alt="Spring Boot Version"/>
-  <img src="https://img.shields.io/badge/Java-17-orange" alt="Java Version"/>
-  <img src="https://img.shields.io/badge/MySQL-Database-blue" alt="Database"/>
-  <img src="https://img.shields.io/badge/JPA-Hibernate-green" alt="JPA"/>
-</p>
+A comprehensive hospital management system built with **Spring Boot 3.4.3** and **Java 17**, featuring patient registration, doctor management, appointment scheduling, and medical consultations. This application demonstrates JPA relationships, REST APIs, and includes both H2 (development) and MySQL (production) database support.
 
-<p align="center">
-  A modern Spring Boot application for efficient hospital resource management
-</p>
+## 🚀 Quick Start (Docker - Recommended)
 
-## 📋 Overview
-
-This Hospital Management System provides a comprehensive backend solution for healthcare facilities to manage patients, doctors, appointments, and consultations. Built with Spring Boot and JPA, it offers a robust RESTful API architecture for seamless integration with frontend applications.
-
-## 🏥 Key Features
-
-- **Patient Management**: Complete CRUD operations for patient records
-- **Doctor Directory**: Manage medical staff and their specialties
-- **Appointment Scheduling**: Create, track, and manage patient appointments
-- **Consultation Records**: Document medical consultations and reports
-- **Status Tracking**: Monitor appointment statuses (PENDING, CANCELED, DONE)
-
-## 🔄 Entity Relationships
-
-The system is designed with the following entity relationships:
-
-- **Patient ➔ Appointments**: One-to-Many relationship
-- **Doctor ➔ Appointments**: One-to-Many relationship  
-- **Appointment ➔ Consultation**: One-to-One relationship
-
-## 🗃️ Database Schema
-
-The application uses JPA with a relational database to represent the following entities:
-
-### Patient Entity
-```java
-@Entity
-public class Patient {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private Date birthDate;
-    private boolean sick;
-    private int score;
-    @OneToMany(mappedBy = "patient")
-    private List<Appointment> appointments;
-}
-```
-
-### Doctor Entity
-```java
-@Entity
-public class Doctor {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String name;
-    private String speciality;
-    private String email;
-    @OneToMany(mappedBy = "doctor")
-    private Collection<Appointment> appointments;
-}
-```
-
-### Appointment Entity
-```java
-@Entity
-public class Appointment {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Date appointmentDate;
-    @Enumerated(EnumType.STRING)
-    private StatusRDV status;
-    @ManyToOne
-    private Patient patient;
-    @ManyToOne
-    private Doctor doctor;
-    @OneToOne(mappedBy = "appointment")
-    private Consultation consultation;
-}
-```
-
-### Consultation Entity
-```java
-@Entity
-public class Consultation {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Date dateConsultation;
-    private Date rapportConsultation;
-    @OneToOne
-    private Appointment appointment;
-}
-```
-
-## 🛠️ Technology Stack
-
-- **Spring Boot**: Core framework for building the application
-- **Spring Data JPA**: Object-relational mapping
-- **Hibernate**: JPA implementation
-- **MySQL/H2**: Database options
-- **Lombok**: Reduces boilerplate code
-- **Maven**: Dependency management
-
-## 🚀 Getting Started
-
-### Prerequisites
-- JDK 17 or higher
-- Maven
-- MySQL (or use the embedded H2 database for testing)
-
-### Installation
-
-1. Clone the repository
-   ```bash
-   git clone https://github.com/yourusername/Hospital-Management-JAVA.git
-   ```
-
-2. Navigate to the project directory
-   ```bash
-   cd Hospital-Management-JAVA
-   ```
-
-3. Build the project
-   ```bash
-   mvn clean install
-   ```
-
-4. Run the application
-   ```bash
-   mvn spring-boot:run
-   ```
-
-5. The API will be available at `http://localhost:8085`
-
-### Database Configuration
-
-The application is pre-configured to use MySQL. You can modify the `application.properties` file to change database settings:
-
-```properties
-# MySQL Configuration
-spring.datasource.url=jdbc:mysql://localhost:3306/hospitaldb?createDatabaseIfNotExist=true
-spring.datasource.username=root
-spring.datasource.password=
-spring.jpa.hibernate.ddl-auto=update
-
-# Uncomment for H2 in-memory database
-# spring.datasource.url=jdbc:h2:mem:hostpitaldb
-# spring.h2.console.enabled=true
-```
-
-## 📝 API Documentation
-
-The application exposes RESTful endpoints for managing hospital resources:
-
-- **Patients API**: `/api/patients`
-- **Doctors API**: `/api/doctors`
-- **Appointments API**: `/api/appointments`
-- **Consultations API**: `/api/consultations`
-
-## 🧪 Testing
-
-Run the tests with Maven:
+**Zero-configuration setup! Just Docker required.**
 
 ```bash
+# Clone the repository
+git clone https://github.com/thepiloter/Hospital-Management-JAVA.git
+cd Hospital-Management-JAVA
+
+# One-command setup (Windows)
+docker-setup.bat run
+
+# One-command setup (macOS/Linux)
+chmod +x docker-setup.sh && ./docker-setup.sh run
+
+# Or manually with Docker Compose
+docker-compose up --build -d
+```
+
+**Access the application:**
+- 🌐 **REST API**: http://localhost:8085/patients
+- 🗄️ **H2 Database Console**: http://localhost:8085/h2-console
+- 📊 **Individual Patient**: http://localhost:8085/patients/1
+
+## 🛠️ Alternative Setup (Manual)
+
+### Prerequisites
+- **Java 17+**
+- **Maven 3.6+**
+
+### Run Locally
+```bash
+# Clone and navigate
+git clone https://github.com/thepiloter/Hospital-Management-JAVA.git
+cd Hospital-Management-JAVA
+
+# Run with Maven (H2 database pre-configured)
+mvn spring-boot:run
+
+# Or build and run JAR
+mvn clean package
+java -jar target/Hospital-Management-0.0.1-SNAPSHOT.jar
+```
+
+## 🏗️ Architecture Overview
+
+### **Technology Stack**
+- **Backend**: Spring Boot 3.4.3, Spring Data JPA, Hibernate
+- **Database**: H2 (development), MySQL 8.0+ (production)
+- **Build Tool**: Maven 3.9+
+- **Java Version**: 17 (LTS)
+- **Containerization**: Docker & Docker Compose
+
+### **Core Features**
+- 👥 **Patient Management**: Complete patient lifecycle with medical history
+- 👨‍⚕️ **Doctor Profiles**: Specialization-based management and availability
+- 📅 **Appointment Scheduling**: Time-slot management with conflict detection
+- 📋 **Medical Consultations**: Documentation and follow-up tracking
+- 🔗 **REST API**: JSON endpoints for external integration
+- 🗄️ **Dual Database**: H2 for development, MySQL for production
+
+### **Database Schema**
+```
+Patient (1) ←→ (N) Appointment (N) ←→ (1) Doctor
+                       ↓ (1:1)
+                   Consultation
+```
+
+## 📡 API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/patients` | Get all patients |
+| `GET` | `/patients/{id}` | Get patient by ID |
+| `GET` | `/h2-console` | H2 Database web interface |
+
+### Example API Response
+```json
+[
+  {
+    "id": 1,
+    "name": "ELBADRY",
+    "birthDate": "2030-09-21T00:26:05.000+00:00",
+    "sick": false,
+    "score": 42,
+    "appointments": []
+  }
+]
+```
+
+## 🐳 Docker Configuration
+
+### **Container Features**
+- ✅ **Multi-stage build** for optimized image size
+- ✅ **Non-root user** for security
+- ✅ **Health checks** for reliability
+- ✅ **Alpine Linux** for minimal footprint
+- ✅ **Automatic restarts** unless stopped
+
+### **Docker Commands**
+```bash
+# Build and start (recommended)
+docker-setup.bat run          # Windows
+./docker-setup.sh run         # macOS/Linux
+
+# Individual commands
+docker-setup.bat build        # Build image
+docker-setup.bat start        # Start container
+docker-setup.bat stop         # Stop container
+docker-setup.bat logs         # View logs
+docker-setup.bat cleanup      # Remove all resources
+
+# Manual Docker commands
+docker-compose up --build -d  # Build and run
+docker-compose logs -f        # View logs
+docker-compose down           # Stop and remove
+```
+
+## 🗄️ Database Configuration
+
+### **H2 Database (Default)**
+- **URL**: `jdbc:h2:mem:hospitaldb`
+- **Console**: http://localhost:8085/h2-console
+- **Username**: `sa`
+- **Password**: (empty)
+- **Benefits**: Zero setup, perfect for development
+
+### **MySQL Database (Production)**
+```properties
+# Update src/main/resources/application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/hospitaldb?createDatabaseIfNotExist=true
+spring.datasource.username=root
+spring.datasource.password=your_password
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+```
+
+## 📁 Project Structure
+
+```
+Hospital-Management-JAVA/
+├── src/main/java/com/ELBADRY/hospitalmanagement/
+│   ├── entities/           # JPA Entities (Patient, Doctor, Appointment)
+│   ├── repositories/       # Spring Data JPA Repositories
+│   ├── service/           # Business Logic Layer
+│   ├── web/               # REST Controllers
+│   └── HospitalManagementApplication.java
+├── src/main/resources/
+│   └── application.properties
+├── docker-compose.yml     # Docker orchestration
+├── Dockerfile            # Container definition
+├── docker-setup.bat     # Windows automation script
+├── docker-setup.sh      # macOS/Linux automation script
+└── pom.xml              # Maven configuration
+```
+
+## � Development
+
+### **Sample Data**
+The application automatically creates sample data on startup:
+- **Patients**: ELBADRY, Hassan, Ali (with interesting birth date variations)
+- **Doctors**: Mohammed, Younes, Omar (random specializations)
+
+### **Key Classes**
+- `Patient.java`: Patient entity with appointment relationships
+- `Doctor.java`: Doctor profiles with specializations
+- `Appointment.java`: Appointment scheduling system
+- `HospitalServiceImpl.java`: Core business logic
+- `PatientRestService.java`: REST API endpoints
+
+### **Building from Source**
+```bash
+# Compile and test
+mvn clean compile
+
+# Run tests
 mvn test
+
+# Package as JAR
+mvn clean package
+
+# Run with specific profile
+mvn spring-boot:run -Dspring-boot.run.profiles=production
+```
+
+## 🚨 Troubleshooting
+
+### **Common Issues**
+
+**Port 8085 already in use:**
+```bash
+# Check what's using the port
+netstat -an | findstr :8085
+
+# Change port in application.properties
+server.port=8086
+```
+
+**Docker issues:**
+```bash
+# Check Docker status
+docker info
+
+# Rebuild containers
+docker-compose build --no-cache
+
+# View container logs
+docker-compose logs hospital-management
+```
+
+**Java version problems:**
+```bash
+# Check Java version
+java -version
+
+# Verify JAVA_HOME
+echo $JAVA_HOME  # macOS/Linux
+echo %JAVA_HOME% # Windows
+```
+
+### **Performance Tuning**
+```bash
+# Increase JVM memory (Docker)
+JAVA_OPTS=-Xmx1024m -Xms512m
+
+# Increase JVM memory (Local)
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Xmx1024m"
+```
+
+## � Monitoring & Health
+
+### **Health Checks**
+- **Docker**: Automatic health checks every 30s
+- **Manual**: `curl http://localhost:8085/patients`
+- **Database**: Access H2 console to verify data
+
+### **Logs**
+```bash
+# Docker logs
+docker-compose logs -f
+
+# Application logs (local)
+tail -f logs/application.log
 ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit changes: `git commit -m 'Add amazing feature'`
+4. Push to branch: `git push origin feature/amazing-feature`
 5. Open a Pull Request
+
+## 📜 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🎯 Perfect for Learning
+
+This repository demonstrates:
+- ✅ **Spring Boot** best practices
+- ✅ **JPA/Hibernate** relationships
+- ✅ **REST API** development
+- ✅ **Docker** containerization
+- ✅ **Database** integration (H2 + MySQL)
+- ✅ **Maven** project structure
+- ✅ **Production-ready** configuration
 
 ---
 
-<p align="center">
-  Made with ❤️ for better healthcare management
-</p>
+**Made with ❤️ for learning and development**

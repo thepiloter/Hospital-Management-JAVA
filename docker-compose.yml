@@ -1,0 +1,30 @@
+services:
+  hospital-management:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hospital-management-java
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - JAVA_OPTS=-Xmx512m -Xms256m
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8085/patients"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - hospital-network
+
+networks:
+  hospital-network:
+    driver: bridge
+    name: hospital-management-network
+
+# Volume for potential future use (logs, data persistence)
+volumes:
+  hospital-data:
+    name: hospital-management-data
