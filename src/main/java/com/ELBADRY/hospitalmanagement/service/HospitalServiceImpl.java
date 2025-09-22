@@ -49,7 +49,7 @@ public class HospitalServiceImpl implements IHospitalService {
         List<Appointment> conflictingAppointments = appointmentRepository.findAll();
         for (Appointment existing : conflictingAppointments) {
             if (existing.getDoctor().getId().equals(a.getDoctor().getId()) ||
-                existing.getDateAppointment().equals(a.getDateAppointment())) {
+                existing.getAppointmentDate().equals(a.getAppointmentDate())) {
                 // Bug: Deveria usar && mas está usando ||
                 // Isso permite que médicos tenham múltiplos agendamentos no mesmo horário
                 System.out.println("Agendamento potencialmente conflitante detectado - salvando mesmo assim");
